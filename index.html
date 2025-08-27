@@ -43,9 +43,9 @@
     <h3>⚙️ 기본 입력</h3>
     <div class="row">
       <div class="ibox"><label for="bw">체중 (kg)</label><input id="bw" type="number" step="0.1" placeholder="필수입력" value=""></div>
- <div class="amp-box" style="flex:1">
-펜타닐 1 앰플<br>= 100 µg / 2 mL<br>(= <span id="stockConc">50</span> µg/mL)
-</div>
+      <div class="amp-box" style="flex:1">
+        펜타닐 1 앰플<br>= 100 µg / 2 mL<br>(= <span id="stockConc">50</span> µg/mL)
+      </div>
     </div>
   </div>
 
@@ -55,31 +55,16 @@
       <label for="dose">목표 용량 (µg/kg/hr) — <b><span id="doseValInline">3.0</span></b></label>
       <div class="range-row">
         <input id="dose" type="range" min="1" max="5" step="0.5" value="3" list="doseTicks">
-        <datalist id="doseTicks">
-          <option value="1"></option>
-          <option value="2"></option>
-          <option value="3"></option>
-          <option value="4"></option>
-          <option value="5"></option>
-        </datalist>
-        <div class="ticks">
-          <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
-        </div>
+        <datalist id="doseTicks"><option value="1"></option><option value="2"></option><option value="3"></option><option value="4"></option><option value="5"></option></datalist>
+        <div class="ticks"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
       </div>
     </div>
     <div class="ibox" style="margin-bottom:10px">
       <label for="hours">목표 시간 (hr) — <b><span id="hoursValInline">12</span></b></label>
       <div class="range-row">
         <input id="hours" type="range" min="6" max="48" step="6" value="12" list="hourTicks">
-        <datalist id="hourTicks">
-          <option value="12"></option>
-          <option value="24"></option>
-          <option value="36"></option>
-          <option value="48"></option>
-        </datalist>
-        <div class="ticks">
-          <span>12</span><span>24</span><span>36</span><span>48</span>
-        </div>
+        <datalist id="hourTicks"><option value="12"></option><option value="24"></option><option value="36"></option><option value="48"></option></datalist>
+        <div class="ticks"><span>12</span><span>24</span><span>36</span><span>48</span></div>
       </div>
     </div>
 
@@ -110,32 +95,18 @@
     <div class="amp-box" id="mixLine" style="margin-top:12px;font-size:1.05rem"></div>
   </div>
 
+  <!-- 선택 #1 -->
   <div class="card">
-    <h3>(선택) 💊 임상 편의 조제 (앰플 단위)</h3>
-    <p style="font-size:0.75rem;color:#9ca3af;margin-top:-4px;margin-bottom:8px">입력 체중을 기준으로 앰플 단위로 계산하여 잔여량 없이 사용하기 위한 목적입니다.</p>
+    <h3>(선택) 💊 임상 편의 조제 #1 (앰플 → 시간당 용량)</h3>
+    <p style="font-size:0.75rem;color:#9ca3af;margin-top:-4px;margin-bottom:8px"> 사용앰플수와 CRI시간을 입력해서, 체중 기준 시간당 용량(µg/kg/hr)을 계산합니다.</p>
     <div class="row">
       <div class="ibox redtone" style="max-width:200px">
         <label for="ampInput">사용 앰플 수</label>
         <input id="ampInput" type="number" step="1" value="2">
       </div>
-      <div class="ibox redtone" style="max-width:220px">
-        <label for="flowInput2">펌프 속도 (mL/hr, 선택)</label>
-        <input id="flowInput2" type="number" step="0.1" value="">
-      </div>
-    </div>
-    <div class="ibox redtone" style="margin-top:10px">
-      <label for="hours2">사용 시간 (hr) — <b><span id="hours2Val">12</span></b></label>
-      <div class="range-row">
-        <input id="hours2" type="range" min="6" max="48" step="6" value="12" list="hourTicks2">
-        <datalist id="hourTicks2">
-          <option value="12"></option>
-          <option value="24"></option>
-          <option value="36"></option>
-          <option value="48"></option>
-        </datalist>
-        <div class="ticks">
-          <span>12</span><span>24</span><span>36</span><span>48</span>
-        </div>
+      <div class="ibox redtone" style="max-width:200px">
+        <label for="hours2">사용 시간 (hr)</label>
+        <input id="hours2" type="number" step="1" min="1" value="12">
       </div>
     </div>
     <div id="ampPrep" class="amp-box redtone" style="font-size:1rem;line-height:1.4;margin-top:10px">
@@ -143,45 +114,92 @@
     </div>
   </div>
 
+  <!-- 선택 #2 -->
+  <div class="card">
+    <h3>(선택) 💧 임상 편의 조제 #2 (100 mL 백 · 정확 부피)</h3>
+    <p style="font-size:0.75rem;color:#9ca3af;margin-top:-4px;margin-bottom:8px"> 100 mL 수액에 앰플 N개를 혼합했을 때, 선택한 총 CRI 시간에 맞춰 시간당 용량(µg/kg/hr)을 계산합니다.</p>
+    <div class="row">
+      <div class="ibox redtone" style="max-width:200px">
+        <label for="ampInput100">혼합 앰플 수 (개)</label>
+        <input id="ampInput100" type="number" step="1" value="2">
+      </div>
+      <div class="ibox redtone" style="flex:1;min-width:220px">
+        <label for="hours100">총 CRI 시간 (hr) — <b><span id="hours100Val">12</span></b></label>
+        <input id="hours100" type="range" min="1" max="48" step="1" value="12">
+      </div>
+    </div>
+    <div id="ampPrep100" class="amp-box redtone" style="font-size:1rem;line-height:1.6;margin-top:10px">
+      혼합 정보를 입력하면 결과가 표시됩니다.
+    </div>
+    <p class="note" style="margin-top:8px">※ 계산 가정: 1앰플=100 µg/2 mL(=50 µg/mL). 총 부피 V = 100 + 2×앰플수 (mL). 시간당 용량(µg/kg/hr) = (농도 × V/시간) / 체중.</p>
+  </div>
+
   <p class="warning">📌 펜타닐 사용 시 주의사항<br>
-- 빛에 민감하므로 반드시 차광 보관하세요.<br>
-- 고위험 마약류로, 투여 전·후 이중 확인 절차가 필요합니다.<br>
-- 용량 과다 시 호흡억제가 발생할 수 있어, CRI 중에는 철저한 모니터링이 필수입니다.</p>
+  - 빛에 민감하므로 반드시 차광 보관하세요.<br>
+  - 고위험 마약류로, 투여 전·후 이중 확인 절차가 필요합니다.<br>
+  - 용량 과다 시 호흡억제가 발생할 수 있어, CRI 중에는 철저한 모니터링이 필수입니다.</p>
 
 <script>
   const $ = (id)=>document.getElementById(id);
-  const bw=$('bw');
-  const dose=$('dose');
-  const hours=$('hours');
-  const flowInput=$('flowInput');
-  const mixLine=$('mixLine');
-  const autoV=$('autoV');
-  const ampInput=$('ampInput');
-  const hours2=$('hours2');
-  const hours2Val=$('hours2Val');
-  const flowInput2=$('flowInput2');
-  const ampPrep=$('ampPrep');
+  const bw=$('bw'); const dose=$('dose'); const hours=$('hours');
+  const flowInput=$('flowInput'); const mixLine=$('mixLine'); const autoV=$('autoV');
+
+  // 선택 #1
+  const ampInput=$('ampInput'); const hours2=$('hours2'); const ampPrep=$('ampPrep');
+
+  // 선택 #2
+  const ampInput100=$('ampInput100'); const hours100=$('hours100');
+  const hours100Val=$('hours100Val'); const ampPrep100=$('ampPrep100');
+
+  // 표 테이블
   const needPerHr=$('needPerHr'), needTotal=$('needTotal'), needVol=$('needVol'), ampCount=$('ampCount');
 
-  const UG_PER_AMP = 100; 
-  const ML_PER_AMP = 2;   
-  const STOCK_CONC = UG_PER_AMP / ML_PER_AMP; 
-  $('stockConc').textContent = STOCK_CONC;
+  // 상수
+  const UG_PER_AMP = 100;   // µg
+  const ML_PER_AMP = 2;     // mL
+  const STOCK_CONC = UG_PER_AMP / ML_PER_AMP; // 50 µg/mL
+  document.getElementById('stockConc').textContent = STOCK_CONC;
 
   function fmt(x,d=1){ if(isNaN(x)||!isFinite(x)) return '-'; return Number(x).toFixed(d); }
 
+  // 선택 #2: 100 mL 백 혼합 (정확 부피)
+  function recalcAmpMix100(W){
+    if(!ampPrep100) return;
+    const N = parseInt(ampInput100?.value);
+    const Htot = parseFloat(hours100?.value);
+    if(!isNaN(Htot)) hours100Val.textContent = fmt(Htot,0);
+    if(isNaN(N) || N<=0){
+      ampPrep100.textContent = '혼합 정보를 입력하면 결과가 표시됩니다.';
+      return;
+    }
+    const totalUg = N * UG_PER_AMP;            // 총 약물량(µg)
+    const V_exact   = 100 + (N * ML_PER_AMP);  // mL
+    const C_exact   = totalUg / V_exact;       // µg/mL
+
+    let lines = [`총 약물 ${fmt(totalUg,0)} µg / 총 부피 ${fmt(V_exact,0)} mL`,
+                 `농도: ${fmt(C_exact,2)} µg/mL`];
+
+    if(!isNaN(Htot) && Htot>0 && W>0){
+      const flow = V_exact / Htot;             // mL/hr (H시간에 균등 주입 가정)
+      const dose = (C_exact * flow) / W;       // µg/kg/hr
+      lines.push(`시간당 용량: ${fmt(dose,1)} µg/kg/hr (주입속도 ${fmt(flow,1)} mL/hr)`);
+    }
+
+    ampPrep100.innerHTML = lines.join('<br>');
+  }
+
   function recalc(){
     const W = parseFloat(bw.value);
-    const D = parseFloat(dose.value); 
-    const H = parseFloat(hours.value); 
+    const D = parseFloat(dose.value);
+    const H = parseFloat(hours.value);
 
     const validMain = !(isNaN(W)||W<=0||isNaN(D)||D<=0||isNaN(H)||H<=0);
 
     if(validMain){
-      const ugPerHr = D * W; 
-      const ugTotal = ugPerHr * H; 
-      const volTotal = ugTotal / STOCK_CONC; 
-      const amps = ugTotal / UG_PER_AMP; 
+      const ugPerHr = D * W;               // µg/hr
+      const ugTotal = ugPerHr * H;         // µg
+      const volTotal = ugTotal / STOCK_CONC; // mL of stock
+      const amps = ugTotal / UG_PER_AMP;   // amp count
 
       needPerHr.textContent = `${fmt(ugPerHr,1)} µg/hr`;
       needTotal.textContent = `${fmt(ugTotal,1)} µg`;
@@ -195,9 +213,9 @@
       const Vfinal = F * H;
       if(!isNaN(F) && F>0){
         autoV.textContent = `${fmt(Vfinal,0)} mL`;
-        const Creq = ugPerHr / F; 
-        const x = (Creq * Vfinal) / STOCK_CONC; 
-        const dil = Vfinal - x; 
+        const Creq = ugPerHr / F;           // µg/mL 요구 농도
+        const x = (Creq * Vfinal) / STOCK_CONC; // 필요한 원액 mL
+        const dil = Vfinal - x;
         if(x >= 0 && x <= Vfinal){
           mixLine.innerHTML = `💉 조제: 펜타닐 ${fmt(x,2)} mL  +  💧 수액 ${fmt(dil,0)} mL <br>→ 총 ${fmt(Vfinal,0)} mL (농도 ${fmt(Creq,2)} µg/mL)`;
         } else {
@@ -215,27 +233,25 @@
       mixLine.textContent = '체중/용량/속도를 입력하면 조제 비율이 표시됩니다.';
     }
 
-    // 임상 편의 조제 (앰플 단위 역산)
-    const ampsUsed = parseInt(ampInput.value);
-    const H2 = parseFloat(hours2.value);
-    if(!isNaN(ampsUsed) && ampsUsed>0 && !isNaN(H2) && H2>0){
-      hours2Val.textContent = fmt(H2,0);
-      const totalDrugUg = ampsUsed * UG_PER_AMP; 
-      const rateUgHr = totalDrugUg / H2; 
-      const ratePerKgHr = (W>0) ? rateUgHr / W : 0; 
-      let extra = '';
-      const F2 = parseFloat(flowInput2.value);
-      if(!isNaN(F2) && F2>0){
-        const V2 = H2 * F2;
-        extra = `, 예상 총 부피 ${fmt(V2,0)} mL`;
-      }
-ampPrep.innerHTML = `👉 앰플 ${ampsUsed}개 사용 시, 총 ${fmt(totalDrugUg,0)} µg 투여 <br>→ 시간당 ${fmt(ratePerKgHr,1)} µg/kg/hr${extra}`;
+    // 선택 #1: 앰플 → 시간당 용량
+    const ampsUsed = parseInt(ampInput?.value);
+    const H2 = parseFloat(hours2?.value);
+    if(!isNaN(ampsUsed) && ampsUsed>0 && !isNaN(H2) && H2>0 && W>0){
+      const totalDrugUg = ampsUsed * UG_PER_AMP;
+      const rateUgHr = totalDrugUg / H2;
+      const ratePerKgHr = rateUgHr / W;
+      ampPrep.innerHTML = `시간당 용량: ${fmt(ratePerKgHr,1)} µg/kg/hr · 총투여량 ${fmt(totalDrugUg,0)} µg`;
     } else {
       ampPrep.textContent = '앰플 수와 시간 설정 시, 시간당 용량이 표시됩니다.';
     }
+
+    // 선택 #2
+    recalcAmpMix100(isNaN(W)?NaN:W);
   }
 
-  [bw,dose,hours,flowInput,ampInput,hours2,flowInput2].forEach(el=>['input','change','keyup'].forEach(e=>el.addEventListener(e,recalc)));
+  [bw,dose,hours,flowInput,ampInput,hours2,ampInput100,hours100].forEach(el=>{
+    if(!el) return; ['input','change','keyup'].forEach(e=>el.addEventListener(e,recalc));
+  });
   recalc();
 </script>
 </body>
