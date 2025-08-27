@@ -181,7 +181,7 @@
     if(!isNaN(Htot) && Htot>0 && W>0){
       const flow = V_exact / Htot;             // mL/hr (H시간에 균등 주입 가정)
       const dose = (C_exact * flow) / W;       // µg/kg/hr
-      lines.push(`시간당 용량: ${fmt(dose,1)} µg/kg/hr <br> (주입속도 ${fmt(flow,1)} mL/hr)`);
+      lines.push(`펜타닐 용량: ${fmt(dose,1)} µg/kg/hr <br> (수액속도 ${fmt(flow,1)} mL/hr)`);
     }
 
     ampPrep100.innerHTML = lines.join('<br>');
