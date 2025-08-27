@@ -229,7 +229,7 @@
         const V2 = H2 * F2;
         extra = `, 예상 총 부피 ${fmt(V2,0)} mL`;
       }
-      ampPrep.textContent = `👉 앰플 ${ampsUsed}개 사용 시, 총 ${fmt(totalDrugUg,0)} µg 투여 → 시간당 ${fmt(ratePerKgHr,2)} µg/kg/hr${extra}`;
+      ampPrep.textContent = `👉 앰플 ${ampsUsed}개 사용 시, 총 ${fmt(totalDrugUg,0)} µg 투여 <BR> → 시간당 ${fmt(ratePerKgHr,2)} µg/kg/hr${extra}`;
     } else {
       ampPrep.textContent = '앰플 수와 시간 설정 시, 시간당 용량이 표시됩니다.';
     }
