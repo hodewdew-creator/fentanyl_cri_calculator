@@ -52,7 +52,7 @@
   <div class="card">
     <h3>🧮 약물량 계산</h3>
     <div class="ibox" style="margin-bottom:10px">
-      <label for="dose">목표 용량 (µg/kg/hr) — <b><span id="doseValInline">3.0</span></b></label>
+      <label for="dose"> 펜타닐 용량 (µg/kg/hr) — <b><span id="doseValInline">3.0</span></b></label>
       <div class="range-row">
         <input id="dose" type="range" min="1" max="5" step="0.5" value="3" list="doseTicks">
         <datalist id="doseTicks"><option value="1"></option><option value="2"></option><option value="3"></option><option value="4"></option><option value="5"></option></datalist>
@@ -60,7 +60,7 @@
       </div>
     </div>
     <div class="ibox" style="margin-bottom:10px">
-      <label for="hours">목표 시간 (hr) — <b><span id="hoursValInline">12</span></b></label>
+      <label for="hours"> CRI 총시간 (hr) — <b><span id="hoursValInline">12</span></b></label>
       <div class="range-row">
         <input id="hours" type="range" min="6" max="48" step="6" value="12" list="hourTicks">
         <datalist id="hourTicks"><option value="12"></option><option value="24"></option><option value="36"></option><option value="48"></option></datalist>
@@ -97,8 +97,8 @@
 
   <!-- 선택 #1 -->
   <div class="card">
-    <h3>(선택) 💊 임상 편의 조제 #1 (앰플 → 시간당 용량)</h3>
-    <p style="font-size:0.75rem;color:#9ca3af;margin-top:-4px;margin-bottom:8px"> 사용앰플수와 CRI시간을 입력해서, 체중 기준 시간당 용량(µg/kg/hr)을 계산합니다.</p>
+    <h3>(선택) 💊 앰플 → 시간당 용량 계산기</h3>
+    <p style="font-size:0.75rem;color:#9ca3af;margin-top:-4px;margin-bottom:8px"> 사용앰플수와 총시간으로, 아이의 체중 기준 시간당 용량(µg/kg/hr)을 계산합니다.</p>
     <div class="row">
       <div class="ibox redtone" style="max-width:200px">
         <label for="ampInput">사용 앰플 수</label>
@@ -116,7 +116,7 @@
 
   <!-- 선택 #2 -->
   <div class="card">
-    <h3>(선택) 💧 임상 편의 조제 #2 (100 mL 백 · 정확 부피)</h3>
+    <h3>(선택) 💧 100mL수액 조제 계산기</h3>
     <p style="font-size:0.75rem;color:#9ca3af;margin-top:-4px;margin-bottom:8px"> 100 mL 수액에 앰플 N개를 혼합했을 때, 선택한 총 CRI 시간에 맞춰 시간당 용량(µg/kg/hr)을 계산합니다.</p>
     <div class="row">
       <div class="ibox redtone" style="max-width:200px">
