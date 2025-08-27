@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Fentanyl CRI 계산기</title>
+  <meta name="description" content="체중 기반 Fentanyl CRI 계산 · 약물량 산출 (원액 100 µg/2 mL/앰플)" />
+  <style>
+    :root{ --blue:#1d4ed8; --red:#dc2626; --redlight:#fef2f2; --redborder:#fca5a5; --muted:#64748b; --bg:#f8fafc; --card:#fff; --border:#e5e7eb; }
+    *{box-sizing:border-box}
+    body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:0;background:var(--bg);color:#0f172a;padding:12px}
+    h2{margin:0 0 12px;font-size:1.35rem;color:var(--blue);text-align:center}
+    h3{margin:0 0 8px;font-size:1.05rem;color:#111}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,.04)}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:stretch}
+    .ibox{border:2px solid var(--blue);border-radius:10px;padding:10px;background:#f9fafb;min-width:160px;flex:1;display:flex;flex-direction:column;justify-content:flex-start}
+    .ibox.redtone{border:2px solid var(--redborder);background:var(--redlight)}
+    label{display:block;font-size:.9rem;color:var(--blue);margin-bottom:6px}
+    .redtone label{color:var(--red)}
+    input[type=number],select{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:1rem}
+    input:focus,select:focus{outline:none;border-color:var(--blue)}
+    .range-row{display:block}
+    input[type=range]{width:100%}
+    .ticks{display:flex;justify-content:space-between;margin-top:4px;font-size:.75rem;color:#64748b}
+    .ticks span{flex:1;text-align:center}
+    .ticks span:first-child{text-align:left}
+    .ticks span:last-child{text-align:right}
+    table{width:100%;border-collapse:collapse;font-size:.95rem}
+    th,td{padding:8px;border-bottom:1px solid var(--border);text-align:left}
+    .right{text-align:right}
+    .total{background:#eff6ff;font-weight:700}
+    .note{font-size:.85rem;color:#6b7280}
+    .muted{color:#64748b}
+    .amp-box{font-size:1rem;color:#111827;background:#f0f9ff;border:2px solid var(--blue);padding:10px;border-radius:10px;font-weight:600;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+    .amp-box.redtone{background:#fef2f2;border:2px solid var(--redborder);color:#7f1d1d}
+    .warning{font-size:0.8rem;color:#b91c1c;margin-top:20px;line-height:1.4}
+  </style>
+</head>
+<body>
+  <h2>Fentanyl CRI 계산기</h2>
+
+  <div class="card">
+    <h3>⚙️ 기본 입력</h3>
+    <div class="row">
+      <div class="ibox"><label for="bw">체중 (kg)</label><input id="bw" type="number" step="0.1" placeholder="필수입력" value=""></div>
+      <div class="amp-box" style="flex:1"> 펜타닐 1 앰플(2ml) = 100 µg<br>(= <span id="stockConc">50</span> µg/mL)</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>🧮 약물량 계산</h3>
+    <div class="ibox" style="margin-bottom:10px">
+      <label for="dose">목표 용량 (µg/kg/hr) — <b><span id="doseValInline">3.0</span></b></label>
+      <div class="range-row">
+        <input id="dose" type="range" min="1" max="5" step="0.5" value="3" list="doseTicks">
+        <datalist id="doseTicks">
+          <option value="1"></option>
+          <option value="2"></option>
+          <option value="3"></option>
+          <option value="4"></option>
+          <option value="5"></option>
+        </datalist>
+        <div class="ticks">
+          <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+        </div>
+      </div>
+    </div>
+    <div class="ibox" style="margin-bottom:10px">
+      <label for="hours">목표 시간 (hr) — <b><span id="hoursValInline">12</span></b></label>
+      <div class="range-row">
+        <input id="hours" type="range" min="6" max="48" step="6" value="12" list="hourTicks">
+        <datalist id="hourTicks">
+          <option value="12"></option>
+          <option value="24"></option>
+          <option value="36"></option>
+          <option value="48"></option>
+        </datalist>
+        <div class="ticks">
+          <span>12</span><span>24</span><span>36</span><span>48</span>
+        </div>
+      </div>
+    </div>
+
+    <table>
+      <tbody>
+        <tr><td>시간당 필요량</td><td class="right" id="needPerHr">-</td></tr>
+        <tr><td>총 필요량</td><td class="right" id="needTotal">-</td></tr>
+        <tr><td>원액 기준 총 부피</td><td class="right" id="needVol">-</td></tr>
+      </tbody>
+      <tfoot>
+        <tr class="total"><td>앰플 수</td><td class="right" id="ampCount">-</td></tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>📈 CRI 계획</h3>
+    <div class="row">
+      <div class="ibox" style="max-width:220px">
+        <label for="flowInput">펌프 속도 (mL/hr)</label>
+        <input id="flowInput" type="number" step="0.1" value="10">
+      </div>
+      <div class="ibox" style="max-width:220px">
+        <label>예상 총 부피 (mL)</label>
+        <div id="autoV" class="amp-box" style="padding:8px;font-size:.95rem;font-weight:700">-</div>
+      </div>
+    </div>
+    <div class="amp-box" id="mixLine" style="margin-top:12px;font-size:1.05rem"></div>
+  </div>
+
+  <div class="card">
+    <h3>(선택) 💊 임상 편의 조제 (앰플 단위)</h3>
+    <p style="font-size:0.75rem;color:#9ca3af;margin-top:-4px;margin-bottom:8px">앰플 단위로 계산하여 잔여량 없이 사용하기 위한 목적입니다.</p>
+    <div class="row">
+      <div class="ibox redtone" style="max-width:200px">
+        <label for="ampInput">사용 앰플 수</label>
+        <input id="ampInput" type="number" step="1" value="2">
+      </div>
+      <div class="ibox redtone" style="max-width:220px">
+        <label for="flowInput2">펌프 속도 (mL/hr, 선택)</label>
+        <input id="flowInput2" type="number" step="0.1" value="">
+      </div>
+    </div>
+    <div class="ibox redtone" style="margin-top:10px">
+      <label for="hours2">사용 시간 (hr) — <b><span id="hours2Val">12</span></b></label>
+      <div class="range-row">
+        <input id="hours2" type="range" min="6" max="48" step="6" value="12" list="hourTicks2">
+        <datalist id="hourTicks2">
+          <option value="12"></option>
+          <option value="24"></option>
+          <option value="36"></option>
+          <option value="48"></option>
+        </datalist>
+        <div class="ticks">
+          <span>12</span><span>24</span><span>36</span><span>48</span>
+        </div>
+      </div>
+    </div>
+    <div id="ampPrep" class="amp-box redtone" style="font-size:1rem;line-height:1.4;margin-top:10px">
+      앰플 수와 시간 설정 시, 시간당 용량이 표시됩니다.
+    </div>
+  </div>
+
+  <p class="warning">📌 펜타닐 사용 시 주의사항<br>
+- 빛에 민감하므로 반드시 차광 보관하세요.<br>
+- 고위험 마약류로, 투여 전·후 이중 확인 절차가 필요합니다.<br>
+- 용량 과다 시 호흡억제가 발생할 수 있어, CRI 중에는 철저한 모니터링이 필수입니다.</p>
+
+<script>
+  const $ = (id)=>document.getElementById(id);
+  const bw=$('bw');
+  const dose=$('dose');
+  const hours=$('hours');
+  const flowInput=$('flowInput');
+  const mixLine=$('mixLine');
+  const autoV=$('autoV');
+  const ampInput=$('ampInput');
+  const hours2=$('hours2');
+  const hours2Val=$('hours2Val');
+  const flowInput2=$('flowInput2');
+  const ampPrep=$('ampPrep');
+  const needPerHr=$('needPerHr'), needTotal=$('needTotal'), needVol=$('needVol'), ampCount=$('ampCount');
+
+  const UG_PER_AMP = 100; 
+  const ML_PER_AMP = 2;   
+  const STOCK_CONC = UG_PER_AMP / ML_PER_AMP; 
+  $('stockConc').textContent = STOCK_CONC;
+
+  function fmt(x,d=1){ if(isNaN(x)||!isFinite(x)) return '-'; return Number(x).toFixed(d); }
+
+  function recalc(){
+    const W = parseFloat(bw.value);
+    const D = parseFloat(dose.value); 
+    const H = parseFloat(hours.value); 
+
+    const validMain = !(isNaN(W)||W<=0||isNaN(D)||D<=0||isNaN(H)||H<=0);
+
+    if(validMain){
+      const ugPerHr = D * W; 
+      const ugTotal = ugPerHr * H; 
+      const volTotal = ugTotal / STOCK_CONC; 
+      const amps = ugTotal / UG_PER_AMP; 
+
+      needPerHr.textContent = `${fmt(ugPerHr,1)} µg/hr`;
+      needTotal.textContent = `${fmt(ugTotal,1)} µg`;
+      needVol.textContent = `${fmt(volTotal,2)} mL`;
+      ampCount.textContent = `${fmt(amps,2)} amp (올림시 ${Math.ceil(amps)} amp)`;
+
+      document.getElementById('doseValInline').textContent = fmt(D,1);
+      document.getElementById('hoursValInline').textContent = fmt(H,0);
+
+      const F = parseFloat(flowInput.value);
+      const Vfinal = F * H;
+      if(!isNaN(F) && F>0){
+        autoV.textContent = `${fmt(Vfinal,0)} mL`;
+        const Creq = ugPerHr / F; 
+        const x = (Creq * Vfinal) / STOCK_CONC; 
+        const dil = Vfinal - x; 
+        if(x >= 0 && x <= Vfinal){
+          mixLine.innerHTML = `💉 조제: 펜타닐 ${fmt(x,2)} mL  +  💧 수액 ${fmt(dil,0)} mL <br>→ 총 ${fmt(Vfinal,0)} mL (농도 ${fmt(Creq,2)} µg/mL)`;
+        } else {
+          mixLine.textContent = `⚠️ 요구 농도가 원액 대비 너무 높습니다.`;
+        }
+      } else {
+        autoV.textContent = '-';
+        mixLine.textContent = '체중/용량/속도를 입력하면 조제 비율이 표시됩니다.';
+      }
+    } else {
+      needPerHr.textContent = '-';
+      needTotal.textContent = '-';
+      needVol.textContent = '-';
+      ampCount.textContent = '-';
+      mixLine.textContent = '체중/용량/속도를 입력하면 조제 비율이 표시됩니다.';
+    }
+
+    // 임상 편의 조제 (앰플 단위 역산)
+    const ampsUsed = parseInt(ampInput.value);
+    const H2 = parseFloat(hours2.value);
+    if(!isNaN(ampsUsed) && ampsUsed>0 && !isNaN(H2) && H2>0){
+      hours2Val.textContent = fmt(H2,0);
+      const totalDrugUg = ampsUsed * UG_PER_AMP; 
+      const rateUgHr = totalDrugUg / H2; 
+      const ratePerKgHr = (W>0) ? rateUgHr / W : 0; 
+      let extra = '';
+      const F2 = parseFloat(flowInput2.value);
+      if(!isNaN(F2) && F2>0){
+        const V2 = H2 * F2;
+        extra = `, 예상 총 부피 ${fmt(V2,0)} mL`;
+      }
+      ampPrep.textContent = `👉 앰플 ${ampsUsed}개 사용 시, 총 ${fmt(totalDrugUg,0)} µg 투여 → 시간당 ${fmt(ratePerKgHr,2)} µg/kg/hr${extra}`;
+    } else {
+      ampPrep.textContent = '앰플 수와 시간 설정 시, 시간당 용량이 표시됩니다.';
+    }
+  }
+
+  [bw,dose,hours,flowInput,ampInput,hours2,flowInput2].forEach(el=>['input','change','keyup'].forEach(e=>el.addEventListener(e,recalc)));
+  recalc();
+</script>
+</body>
+</html>
