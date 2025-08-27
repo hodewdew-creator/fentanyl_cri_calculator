@@ -176,7 +176,7 @@
     const C_exact   = totalUg / V_exact;       // µg/mL
 
     let lines = [`총 약물 ${fmt(totalUg,0)} µg / 총 부피 ${fmt(V_exact,0)} mL`,
-                 `농도: ${fmt(C_exact,2)} µg/mL`];
+                 ];
 
     if(!isNaN(Htot) && Htot>0 && W>0){
       const flow = V_exact / Htot;             // mL/hr (H시간에 균등 주입 가정)
@@ -216,7 +216,7 @@
         const x = (Creq * Vfinal) / STOCK_CONC; // 필요한 원액 mL
         const dil = Vfinal - x;
         if(x >= 0 && x <= Vfinal){
-          mixLine.innerHTML = `💉 조제: 펜타닐 ${fmt(x,2)} mL  +  💧 수액 ${fmt(dil,0)} mL <br>→ 총 ${fmt(Vfinal,0)} mL (농도 ${fmt(Creq,2)} µg/mL)`;
+          mixLine.innerHTML = `💉 조제: 펜타닐 ${fmt(x,2)} mL  +  💧 수액 ${fmt(dil,0)} mL <br>→ 총 ${fmt(Vfinal,0)} mL `;
         } else {
           mixLine.textContent = `⚠️ 요구 농도가 원액 대비 너무 높습니다.`;
         }
